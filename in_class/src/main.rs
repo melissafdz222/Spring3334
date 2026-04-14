@@ -1,27 +1,18 @@
-fn add(a: i32, b: i32) -> i32 {
-    a + b
-}
+use std::thread;
+use std::time::Duration;
 
 fn main() {
-    println!("2 + 2 = {}", add(2, 2));
-}
+    let handle = thread::spawn(|| {
+        for i in 1..=10 {
+            println!("hi number {} from the spawned thread!", i);
+            thread::sleep(Duration::from_millis(1));
+        }
+    });
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_add() {
-        assert_eq!(add(2, 2), 4);
+    for i in 1..=5 {
+        println!("hi number {} from the main thread!", i);
+        thread::sleep(Duration::from_millis(1));
     }
 
-    #[test]
-    fn test_add_negative() {
-    assert_eq!(add(-2, -2), -4);
-    }
-
-    #[test]
-    fn test_add_zero() {
-    assert_eq!(add(0, 0), 0);
-    }
+    handle.join().unwrap();
 }
